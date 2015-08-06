@@ -14,11 +14,12 @@ NexusÂ® is an artifact repository manager.
 
 ## Run Nexus
 
-To start the server, where version is the release version of the Docker container.
+To start the server, where version is the release version of the Docker container, run the following command.
     
       $ docker run -d --name nexus -p 8081:8081 -e ADOP_LDAP_ENABLED=false com.accenture.com/adop/nexus:VERSION
 
 If LDAP authentication is disabled the default user/password is:
+  
   * username: `admin`
   * password: `admin123`
 
@@ -59,3 +60,4 @@ The image reads the following LDAP environment variables:
  * `MAX_HEAP`, passed as -Xmx. Defaults to 1g.
  * `MIN_HEAP`, passed as -Xms. Defaults to 256m.
  * `JAVA_OPTS`. Additional options can be passed to the JVM via this variable. Default: -server -XX:MaxPermSize=192m -Djava.net.preferIPv4Stack=true.
+ * `NEXUS_BASE_URL`, the nexus base URL
