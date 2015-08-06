@@ -5,6 +5,7 @@
   <anonymousUsername>anonymous</anonymousUsername>
   <anonymousPassword>{FJRGn3IAhjoHIOv//5FGl2BRdIZPsHeIurEPWaZV+1Y=}</anonymousPassword>
   <realms>
+    <realm>LdapAuthenticatingRealm</realm>
     <realm>XmlAuthenticatingRealm</realm>
     <realm>XmlAuthorizingRealm</realm>
   </realms>
