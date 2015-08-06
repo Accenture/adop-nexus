@@ -23,6 +23,12 @@ If LDAP authentication is disabled the default user/password is:
   * username: `admin`
   * password: `admin123`
 
+## Persisting data
+
+To persis data mount out the /sonatype-work directory.
+
+e.g. $ docker run -d --name nexus -v $(pwd)/data:/sonatype-work -p 8081:8081 -e ADOP_LDAP_ENABLED=false com.accenture.com/adop/nexus:VERSION
+
 ## LDAP Authentication
 
 By default, the image will enable LDAP authentication, setting the `ADOP_LDAP_ENABLED` environment variable to false will disable LDAP authentication. The variables write Nexus ldap.xml configuration file. 
@@ -34,7 +40,17 @@ The default nexus configuration depends on the following LDAP groups
 
 Example run command:
 
-      $ docker run -ti -p 8080:8081 -e LDAP_SEARCH_BASE=dc=adop,dc=accenture,dc=com -e ADOP_LDAP_ENABLED=true -e LDAP_URL=ldap.service.adop.consul -e LDAP_BIND_DN=cn= admin,dc=adop,dc=accenture,dc=com -e LDAP_USER_PASSWORD_ATTRIBUTE=userPassword -e    LDAP_USER_BASE_DN=ou=people -e LDAP_GROUP_BASE_DN=ou=groups -e LDAP_BIND_PASSWORD=password --dns=10.0.1.5 docker.accenture.com/adop/nexus:0.1.0
+      $ docker run -ti -p 8080:8081 \
+         -e LDAP_SEARCH_BASE=dc=adop,dc=accenture,dc=com \
+         -e ADOP_LDAP_ENABLED=true \
+         -e LDAP_URL=ldap.service.adop.consul \
+         -e LDAP_BIND_DN=cn= admin,dc=adop,dc=accenture,dc=com \
+         -e LDAP_USER_PASSWORD_ATTRIBUTE=userPassword \
+         -e LDAP_USER_BASE_DN=ou=people \ 
+         -e LDAP_GROUP_BASE_DN=ou=groups \ 
+         -e LDAP_BIND_PASSWORD=password \ 
+         --dns=10.0.1.5 \
+         docker.accenture.com/adop/nexus:0.1.0
 
 The image reads the following LDAP environment variables:
 

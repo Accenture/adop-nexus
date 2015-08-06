@@ -5,6 +5,13 @@ set -e
 echo "Starting Nexus."
 echo "$(date) - LDAP Enabled: ${ADOP_LDAP_ENABLED}"
 
+# Copy config files.
+if [ "$(ls -A ${NEXUS_HOME})" ]
+	then
+	mkdir -p /${NEXUS_HOME}/conf/
+	mv /resources/* /${NEXUS_HOME}/conf/
+fi
+
 if [ -n "${NEXUS_BASE_URL}" ]
 	then
 	# Add base url - requests timeout if incorrect
