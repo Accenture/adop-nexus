@@ -6,10 +6,14 @@ echo "Starting Nexus."
 echo "$(date) - LDAP Enabled: ${ADOP_LDAP_ENABLED}"
 
 # Copy config files.
-if [ "$(ls -A ${NEXUS_HOME})" ]
+mkdir -p /${NEXUS_HOME}/conf/
+mv /resources/* /${NEXUS_HOME}/conf/
+
+# Delete lock file if instance was not shutdown cleanly.
+if [ -e "${NEXUS_HOME}/nexus.lock" ] 
 	then
-	mkdir -p /${NEXUS_HOME}/conf/
-	mv /resources/* /${NEXUS_HOME}/conf/
+	echo "$(date) Application was not shutdown cleanly, deleting lock file."
+	rm -rf ${NEXUS_HOME}/nexus.lock
 fi
 
 if [ -n "${NEXUS_BASE_URL}" ]
@@ -22,7 +26,8 @@ fi
 if [ "${ADOP_LDAP_ENABLED}" = true ]
   then
 
- # Delete XML auth realm
+ # Delete default authentication realms (XMLauth..) from Nexus if LDAP auth is enabled
+ # If you get locked out of nexus, restart nexus with ADOP_LDAP_ENABLED=false.
  sed -i "/[a-zA-Z]*Xml*[a-zA-Z]/d"  ${NEXUS_HOME}/conf/security-configuration.xml
 
 	cat > ${NEXUS_HOME}/conf/ldap.xml <<- EOM  

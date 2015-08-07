@@ -24,7 +24,7 @@ ENV ADOP_LDAP_ENABLED=true \
 USER root
 
 ADD resources/nexus.sh /usr/local/bin/
-ADD resources/conf/ /resources
+ADD resources/conf/ /resources/
 
 RUN chmod +x /usr/local/bin/nexus.sh
 
