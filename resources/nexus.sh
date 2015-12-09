@@ -7,7 +7,7 @@ echo "$(date) - LDAP Enabled: ${ADOP_LDAP_ENABLED}"
 
 # Copy config files.
 mkdir -p /${NEXUS_HOME}/conf/
-mv /resources/* /${NEXUS_HOME}/conf/
+cp -R /resources/* /${NEXUS_HOME}/conf/
 
 # Delete lock file if instance was not shutdown cleanly.
 if [ -e "${NEXUS_HOME}/nexus.lock" ] 
