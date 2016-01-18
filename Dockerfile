@@ -3,6 +3,7 @@ FROM sonatype/nexus:2.11.2-06
 MAINTAINER Robert Northard, <robert.a.northard>
 
 ENV ADOP_LDAP_ENABLED=true \
+    CONTEXT_PATH=/nexus \
     NEXUS_HOME=/sonatype-work/ \
     LDAP_SEARCH_BASE="" \
     LDAP_URL="" \
