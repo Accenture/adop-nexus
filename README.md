@@ -16,7 +16,7 @@ NexusÂ® is an artifact repository manager.
 
 To start the server, where version is the release version of the Docker container, run the following command.
     
-      $ docker run -d --name nexus -p 8081:8081 -e ADOP_LDAP_ENABLED=false com.accenture.com/adop/nexus:VERSION
+      $ docker run -d --name nexus -p 8081:8081 -e LDAP_ENABLED=false com.accenture.com/adop/nexus:VERSION
 
 If LDAP authentication is disabled the default user/password is:
   
@@ -27,11 +27,11 @@ If LDAP authentication is disabled the default user/password is:
 
 To persis data mount out the /sonatype-work directory.
 
-e.g. $ docker run -d --name nexus -v $(pwd)/data:/sonatype-work -p 8081:8081 -e ADOP_LDAP_ENABLED=false com.accenture.com/adop/nexus:VERSION
+e.g. $ docker run -d --name nexus -v $(pwd)/data:/sonatype-work -p 8081:8081 -e LDAP_ENABLED=false com.accenture.com/adop/nexus:VERSION
 
 ## LDAP Authentication
 
-By default, the image will enable LDAP authentication, setting the `ADOP_LDAP_ENABLED` environment variable to false will disable LDAP authentication. The variables write Nexus ldap.xml configuration file. 
+By default, the image will enable LDAP authentication, setting the `LDAP_ENABLED` environment variable to false will disable LDAP authentication. The variables write Nexus ldap.xml configuration file. 
 
 The default nexus configuration depends on the following LDAP groups
   * nx-admin - administrators
@@ -42,7 +42,7 @@ Example run command:
 
       $ docker run -ti -p 8080:8081 \
          -e LDAP_SEARCH_BASE=dc=adop,dc=accenture,dc=com \
-         -e ADOP_LDAP_ENABLED=true \
+         -e LDAP_ENABLED=true \
          -e LDAP_URL=ldap.service.adop.consul \
          -e LDAP_BIND_DN=cn= admin,dc=adop,dc=accenture,dc=com \
          -e LDAP_USER_PASSWORD_ATTRIBUTE=userPassword \

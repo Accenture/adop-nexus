@@ -1,13 +1,12 @@
 #! /bin/bash
-#
 set -e
 
 echo "Starting Nexus."
-echo "$(date) - LDAP Enabled: ${ADOP_LDAP_ENABLED}"
+echo "$(date) - LDAP Enabled: ${LDAP_ENABLED}"
 
 # Copy config files.
-mkdir -p /${NEXUS_HOME}/conf/
-cp -R /resources/* /${NEXUS_HOME}/conf/
+mkdir -p ${NEXUS_HOME}conf
+cp -R /resources/* ${NEXUS_HOME}conf
 
 # Delete lock file if instance was not shutdown cleanly.
 if [ -e "${NEXUS_HOME}/nexus.lock" ] 
@@ -23,11 +22,11 @@ if [ -n "${NEXUS_BASE_URL}" ]
 	echo "$(date) Base URL: ${NEXUS_BASE_URL}"
 fi
 
-if [ "${ADOP_LDAP_ENABLED}" = true ]
+if [ "${LDAP_ENABLED}" = true ]
   then
 
  # Delete default authentication realms (XMLauth..) from Nexus if LDAP auth is enabled
- # If you get locked out of nexus, restart nexus with ADOP_LDAP_ENABLED=false.
+ # If you get locked out of nexus, restart nexus with LDAP_ENABLED=false.
  sed -i "/[a-zA-Z]*Xml*[a-zA-Z]/d"  ${NEXUS_HOME}/conf/security-configuration.xml
 
 	cat > ${NEXUS_HOME}/conf/ldap.xml <<- EOM  
@@ -65,9 +64,13 @@ else
 	sed -i "/[a-zA-Z]*Ldap*[a-zA-Z]/d" ${NEXUS_HOME}/conf/security-configuration.xml
 fi
 
-java \
-  -Dnexus-work=${SONATYPE_WORK} -Dnexus-webapp-context-path=${CONTEXT_PATH} \
-  -Xms${MIN_HEAP} -Xmx${MAX_HEAP} \
-  -cp 'conf/:lib/*' \
-  ${JAVA_OPTS} \
-  org.sonatype.nexus.bootstrap.Launcher ${LAUNCHER_CONF}
+# chown the nexus home directory
+chown -R nexus:nexus ${NEXUS_HOME}
+
+# start nexus as the nexus user
+su -c "java \
+-Dnexus-work=${SONATYPE_WORK} -Dnexus-webapp-context-path=${CONTEXT_PATH} \
+-Xms${MIN_HEAP} -Xmx${MAX_HEAP} \
+-cp 'conf/:lib/*' \
+${JAVA_OPTS} \
+org.sonatype.nexus.bootstrap.Launcher ${LAUNCHER_CONF}" -s /bin/bash nexus

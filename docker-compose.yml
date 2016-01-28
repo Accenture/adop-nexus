@@ -3,5 +3,5 @@ nexus:
   ports:
    - "8081:8081"
   environment:
-   - ADOP_LDAP_ENABLED=false
+   - LDAP_ENABLED=false
    - NEXUS_BASE_URL=http://192.168.59.103:8081

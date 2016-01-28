@@ -2,7 +2,7 @@ FROM sonatype/nexus:2.11.2-06
 
 MAINTAINER Robert Northard, <robert.a.northard>
 
-ENV ADOP_LDAP_ENABLED=true \
+ENV LDAP_ENABLED=true \
     CONTEXT_PATH=/nexus \
     NEXUS_HOME=/sonatype-work/ \
     LDAP_SEARCH_BASE="" \
@@ -24,9 +24,9 @@ ENV ADOP_LDAP_ENABLED=true \
 
 USER root
 
-ADD resources/nexus.sh /usr/local/bin/
-ADD resources/conf/ /resources/
+COPY resources/nexus.sh /usr/local/bin/
+COPY resources/conf/ /resources/
 
-RUN chmod +x /usr/local/bin/nexus.sh
+RUN chmod u+x /usr/local/bin/nexus.sh
 
 ENTRYPOINT ["/usr/local/bin/nexus.sh"]
