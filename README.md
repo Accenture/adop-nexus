@@ -1,9 +1,9 @@
 #Supported tags and respective Dockerfile links
 
-- [`0.0.4`, `0.0.4` (*0.0.4/Dockerfile*)](https://github.com/Accenture/adop-nexus/blob/master/Dockerfile.md)
+- [`0.1.0`, `0.1.0` (*0.1.0/Dockerfile*)](https://github.com/Accenture/adop-nexus/blob/master/Dockerfile.md)
 
-# What is docker-nexus?
-docker-nexus is a wrapper for the sonatype/nexus image. It has primarily been built to perform extended configuration. Nexus® is an artifact repository manager.
+# What is adop-nexus?
+adop-nexus is a wrapper for the sonatype/nexus image. It has primarily been built to perform extended configuration. Nexus® is an artifact repository manager.
 
 ![logo](http://blog.sonatype.com/wp-content/uploads/2010/01/nexus-small.png)
 
@@ -13,7 +13,7 @@ docker-nexus is a wrapper for the sonatype/nexus image. It has primarily been bu
 
 To start the server, where version is the release version of the Docker container, run the following command.
     
-      $ docker run -d --name nexus -p 8081:8081 -e LDAP_ENABLED=false com.accenture.com/adop/nexus:VERSION
+      $ docker run -d --name nexus -p 8081:8081 -e LDAP_ENABLED=false accenture/adop-nexus:VERSION
 
 If LDAP authentication is disabled the default user/password is:
   
@@ -24,7 +24,7 @@ If LDAP authentication is disabled the default user/password is:
 
 To persis data mount out the /sonatype-work directory.
 
-e.g. $ docker run -d --name nexus -v $(pwd)/data:/sonatype-work -p 8081:8081 -e LDAP_ENABLED=false com.accenture.com/adop/nexus:VERSION
+e.g. $ docker run -d --name nexus -v $(pwd)/data:/sonatype-work -p 8081:8081 -e LDAP_ENABLED=false accenture/adop-nexus:VERSION
 
 ## LDAP Authentication
 
@@ -38,16 +38,15 @@ The default nexus configuration depends on the following LDAP groups
 Example run command:
 
       $ docker run -ti -p 8080:8081 \
-         -e LDAP_SEARCH_BASE=dc=adop,dc=accenture,dc=com \
+         -e LDAP_SEARCH_BASE=dc=example,dc=com \
          -e LDAP_ENABLED=true \
-         -e LDAP_URL=ldap.service.adop.consul \
-         -e LDAP_BIND_DN=cn= admin,dc=adop,dc=accenture,dc=com \
+         -e LDAP_URL=ldap \
+         -e LDAP_BIND_DN=cn=admin,dc=example,dc=com \
          -e LDAP_USER_PASSWORD_ATTRIBUTE=userPassword \
          -e LDAP_USER_BASE_DN=ou=people \ 
          -e LDAP_GROUP_BASE_DN=ou=groups \ 
          -e LDAP_BIND_PASSWORD=password \ 
-         --dns=10.0.1.5 \
-         docker.accenture.com/adop/nexus:VERSION
+         accenture/adop-nexus:VERSION
 
 The image reads the following LDAP environment variables:
 
@@ -81,7 +80,6 @@ The image reads the following LDAP environment variables:
 
 # License
 Please view [licence information](LICENCE.md) for the software contained on this image.
-
 
 #Supported Docker versions
 
