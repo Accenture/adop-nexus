@@ -53,6 +53,7 @@ The image reads the following LDAP environment variables for ADOP OpenLDAP or LD
   * searchBase - `${LDAP_SEARCH_BASE}`
   * systemUsername - `${LDAP_BIND_DN}`
   * systemPassword - `${LDAP_BIND_PASSWORD}`
+  * protocol - `${LDAP_AUTH_PROTOCOL}`
   * host - `${LDAP_URL}`
   * port - `${LDAP_PORT:-389}`
   * emailAddressAttribute - `${LDAP_USER_EMAIL_ATTRIBUTE:-mail}`
@@ -73,7 +74,6 @@ Additionally, the image reads the following LDAP environment variables if you wa
   * groupIdAttribute - `${LDAP_GROUP_ID_ATTRIBUTE:-cn}`
   * groupMemberAttribute - `${LDAP_GROUP_MEMBER_ATTRIBUTE-uniqueMember}`
   * groupObjectClass - `${LDAP_GROUP_OBJECT_CLASS:-groups}`
-  * userMemberOfAttribute - `${LDAP_USER_MEMBER_ATTRIBUTE:-memberOf}`
   * userIdAttribute - `${LDAP_USER_ID_ATTRIBUTE:-sAMAccountName}`
   * userObjectClass - `${LDAP_USER_OBJECT_CLASS:-person}`
   * userBaseDn - `${LDAP_USER_BASE_DN}`

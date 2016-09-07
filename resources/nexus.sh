@@ -6,7 +6,13 @@ echo "$(date) - LDAP Enabled: ${LDAP_ENABLED}"
 
 # Copy config files.
 mkdir -p ${NEXUS_HOME}conf
-cp -R /resources/* ${NEXUS_HOME}conf
+
+# Nexus configuration is split into two catagories -
+# * Managed : Configuration which is updated everytime container is restarted 
+# * Unmanaged : Configuration which is copied only if the files is missing.
+cp -R /resources/conf/managed/* ${NEXUS_HOME}conf
+cp -R -n /resources/conf/unmanaged/* ${NEXUS_HOME}conf
+
 
 # Delete lock file if instance was not shutdown cleanly.
 if [ -e "${NEXUS_HOME}/nexus.lock" ] 
@@ -43,46 +49,40 @@ if [ ! -z "${NEXUS_CENTRAL_REPO_URL}" ]
         sed -i "s#https://repo1.maven.org/maven2/#${NEXUS_CENTRAL_REPO_URL}#" ${NEXUS_HOME}/conf/nexus.xml
 fi
 
-# Create a custom Nexus Roles
-if [ ${NEXUS_CREATE_CUSTOM_ROLES} = true ]
-         then
-         echo "$(date) - Administrator role added: ${NEXUS_CUSTOM_ADMIN_ROLE}"
-         echo "$(date) - Developer role added: ${NEXUS_CUSTOM_DEV_ROLE}"
-         echo "$(date) - Deployment role added: ${NEXUS_CUSTOM_DEPLOY_ROLE}"
-         INSERT_ROLE="<roles>\
-         \n    <role>\
-         \n      <id>${NEXUS_CUSTOM_ADMIN_ROLE}</id>\
-         \n      <name>${NEXUS_CUSTOM_ADMIN_ROLE}</name>\
+insert_role () {
+	ROLE=$1
+	ROLE_TYPE=$2
+	INSERT_ROLE="<role>\
+         \n      <id>${ROLE}</id>\
+         \n      <name>${ROLE}</name>\
          \n      <roles>\
-         \n        <role>nx-admin</role>\
+         \n        <role>nx-${ROLE_TYPE}</role>\
          \n      </roles>\
-         \n    </role>\
-         \n    <role>\
-         \n      <id>${NEXUS_CUSTOM_DEV_ROLE}</id>\
-         \n      <name>${NEXUS_CUSTOM_DEV_ROLE}</name>\
-         \n      <roles>\
-         \n        <role>nx-developer</role>\
-         \n      </roles>\
-         \n    </role>\
-         \n    <role>\
-         \n      <id>${NEXUS_CUSTOM_DEPLOY_ROLE}</id>\
-         \n      <name>${NEXUS_CUSTOM_DEPLOY_ROLE}</name>\
-         \n      <roles>\
-         \n        <role>nx-deployment</role>\
-         \n      </roles>\
-         \n    </role>\
-         \n  </roles>"
-         sed -i "s+</users>+</users>\n  ${INSERT_ROLE}+" ${NEXUS_HOME}/conf/security.xml
-fi
+         \n    </role>"
+	if egrep "<id>${ROLE}</id>" ${NEXUS_HOME}/conf/security.xml >/dev/null ; then
+		echo "$(date) - Role ${ROLE} already exists, Skipping..."
+	else
+		echo "$(date) - ${ROLE_TYPE} role added: ${ROLE}"
+		sed -i "s+<!--insert-roles-->+<!--insert-roles-->\n    ${INSERT_ROLE}+" ${NEXUS_HOME}/conf/security.xml
+	fi
+}
 
 if [ "${LDAP_ENABLED}" = true ]
   then
  
- # Delete default authentication realms (XMLauth..) from Nexus if LDAP auth is enabled
- # If you get locked out of nexus, restart nexus with LDAP_ENABLED=false.
- sed -i "/[a-zA-Z]*Xml*[a-zA-Z]/d"  ${NEXUS_HOME}/conf/security-configuration.xml
-
-# Define the correct LDAP user and group mapping configurations
+  if [ ${NEXUS_CREATE_CUSTOM_ROLES} = true ]; then
+    echo "$(date) - Creating custom roles and mappings..."
+    [[ -n "${NEXUS_CUSTOM_ADMIN_ROLE}" ]] && insert_role ${NEXUS_CUSTOM_ADMIN_ROLE} admin
+    [[ -n "${NEXUS_CUSTOM_DEPLOY_ROLE}" ]] && insert_role ${NEXUS_CUSTOM_DEPLOY_ROLE} deployment
+    [[ -n "${NEXUS_CUSTOM_DEV_ROLE}" ]] && insert_role ${NEXUS_CUSTOM_DEV_ROLE} developer
+  fi
+  
+  echo "$(date) - Disabling default XMLauth..."
+  # Delete default authentication realms (XMLauth..) from Nexus if LDAP auth is enabled
+  # If you get locked out of nexus, restart nexus with LDAP_ENABLED=false.
+  sed -i "/[a-zA-Z]*Xml*[a-zA-Z]/d"  ${NEXUS_HOME}/conf/security-configuration.xml
+  
+  # Define the correct LDAP user and group mapping configurations
   LDAP_TYPE=${LDAP_TYPE:-openldap}
   echo "$(date) - LDAP Type: ${LDAP_TYPE}"
  
@@ -107,8 +107,9 @@ if [ "${LDAP_ENABLED}" = true ]
 
   'active_directory')
    LDAP_USER_GROUP_CONFIG="  <userAndGroupConfig>
-        <emailAddressAttribute>mail</emailAddressAttribute>
+        <emailAddressAttribute>${LDAP_USER_EMAIL_ATTRIBUTE:-mail}</emailAddressAttribute>
         <ldapGroupsAsRoles>${LDAP_GROUPS_AS_ROLES:-true}</ldapGroupsAsRoles>
+	<groupBaseDn>${LDAP_GROUP_BASE_DN}</groupBaseDn>
         <groupIdAttribute>${LDAP_GROUP_ID_ATTRIBUTE:-cn}</groupIdAttribute>
         <groupMemberAttribute>${LDAP_GROUP_MEMBER_ATTRIBUTE-uniqueMember}</groupMemberAttribute>
         <groupMemberFormat>\${${LDAP_GROUP_MEMBER_FORMAT:-dn}}</groupMemberFormat>
@@ -117,8 +118,11 @@ if [ "${LDAP_ENABLED}" = true ]
         <userObjectClass>${LDAP_USER_OBJECT_CLASS:-person}</userObjectClass>
         <userBaseDn>${LDAP_USER_BASE_DN}</userBaseDn>
         <userRealNameAttribute>${LDAP_USER_REAL_NAME_ATTRIBUTE:-cn}</userRealNameAttribute>
-        <userMemberOfAttribute>${LDAP_USER_MEMBER_ATTRIBUTE:-memberOf}</userMemberOfAttribute>
       </userAndGroupConfig>"
+   ;;
+  *)
+   echo "Unsupported LDAP_TYPE - ${LDAP_TYPE}. Only supports openldap or active_directory."
+   exit 1
    ;;
   esac
  
@@ -131,7 +135,7 @@ cat > ${NEXUS_HOME}/conf/ldap.xml <<- EOM
     <systemUsername>${LDAP_BIND_DN}</systemUsername>
     <systemPassword>${LDAP_BIND_PASSWORD}</systemPassword>
     <authScheme>simple</authScheme>
-    <protocol>ldap</protocol>
+    <protocol>${LDAP_AUTH_PROTOCOL:-ldap}</protocol>
     <host>${LDAP_URL}</host>
     <port>${LDAP_PORT:-389}</port>
   </connectionInfo>
