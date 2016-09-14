@@ -11,6 +11,9 @@
       <email>adop@adop</email>
     </user>
   </users>
+  <roles>
+  <!--insert-roles-->
+  </roles>
   <userRoleMappings>
     <userRoleMapping>
       <userId>admin</userId>

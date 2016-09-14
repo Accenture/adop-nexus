@@ -8,6 +8,7 @@ ENV LDAP_ENABLED=true \
     LDAP_SEARCH_BASE="" \
     LDAP_URL="" \
     LDAP_PORT=389 \
+    LDAP_AUTH_PROTOCOL=ldap \
     LDAP_USER_EMAIL_ATTRIBUTE=mail \
     LDAP_GROUPS_AS_ROLES=true \
     LDAP_GROUP_BASE_DN=ou=groups \
@@ -25,7 +26,7 @@ ENV LDAP_ENABLED=true \
 USER root
 
 COPY resources/nexus.sh /usr/local/bin/
-COPY resources/conf/ /resources/
+COPY resources/ /resources/
 
 RUN chmod u+x /usr/local/bin/nexus.sh
 

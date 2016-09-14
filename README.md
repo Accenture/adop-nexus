@@ -48,11 +48,12 @@ Example run command:
          -e LDAP_BIND_PASSWORD=password \ 
          accenture/adop-nexus:VERSION
 
-The image reads the following LDAP environment variables:
+The image reads the following LDAP environment variables for ADOP OpenLDAP or LDAP_TYPE is 'openldap':
 
   * searchBase - `${LDAP_SEARCH_BASE}`
   * systemUsername - `${LDAP_BIND_DN}`
   * systemPassword - `${LDAP_BIND_PASSWORD}`
+  * protocol - `${LDAP_AUTH_PROTOCOL}`
   * host - `${LDAP_URL}`
   * port - `${LDAP_PORT:-389}`
   * emailAddressAttribute - `${LDAP_USER_EMAIL_ATTRIBUTE:-mail}`
@@ -68,6 +69,16 @@ The image reads the following LDAP environment variables:
   * userBaseDn - `${LDAP_USER_BASE_DN}`
   * userRealNameAttribute - `${LDAP_USER_REAL_NAME_ATTRIBUTE:-cn}`
 
+Additionally, the image reads the following LDAP environment variables if you want to use a Windows Active Directory or LDAP_TYPE is 'active_directory':
+
+  * groupIdAttribute - `${LDAP_GROUP_ID_ATTRIBUTE:-cn}`
+  * groupMemberAttribute - `${LDAP_GROUP_MEMBER_ATTRIBUTE-uniqueMember}`
+  * groupObjectClass - `${LDAP_GROUP_OBJECT_CLASS:-groups}`
+  * userIdAttribute - `${LDAP_USER_ID_ATTRIBUTE:-sAMAccountName}`
+  * userObjectClass - `${LDAP_USER_OBJECT_CLASS:-person}`
+  * userBaseDn - `${LDAP_USER_BASE_DN}`
+  * userRealNameAttribute - `${LDAP_USER_REAL_NAME_ATTRIBUTE:-cn}`
+
 > [Sonatype/Nexus/plugin/LDAP/Documentation](https://books.sonatype.com/nexus-book/reference/ldap.html)
 
 ## Other configuration variables
@@ -77,7 +88,15 @@ The image reads the following LDAP environment variables:
  * `MIN_HEAP`, passed as -Xms. Defaults to 256m.
  * `JAVA_OPTS`. Additional options can be passed to the JVM via this variable. Default: -server -XX:MaxPermSize=192m -Djava.net.preferIPv4Stack=true.
  * `NEXUS_BASE_URL`, the nexus base URL
-
+ * `NEXUS_PROXY_HOST`, the proxy server that connects to Maven public repository. This is used if the Nexus Docker host has strict firewall implementation.
+ * `NEXUS_PROXY_PORT`, the proxy server port.
+ * `NEXUS_CENTRAL_REPO_URL`, if you want to change the Central Repo default maven public repository https://repo1.maven.org/maven2/
+ * `NEXUS_CREATE_CUSTOM_ROLES`, if set to true, create custom roles according to the environment custom role variables:.
+ * `NEXUS_CUSTOM_ADMIN_ROLE` , if set, create a custom group name with nx-admin role.
+ * `NEXUS_CUSTOM_DEV_ROLE` , if set, create a custom group name with nx-developer role.
+ * `NEXUS_CUSTOM_DEPLOY_ROLE`, if set, create a custom group name with nx-deployment role.
+ 
+ 
 # License
 Please view [licence information](LICENCE.md) for the software contained on this image.
 
