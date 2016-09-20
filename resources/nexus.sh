@@ -80,7 +80,8 @@ if [ "${LDAP_ENABLED}" = true ]
   echo "$(date) - Disabling default XMLauth..."
   # Delete default authentication realms (XMLauth..) from Nexus if LDAP auth is enabled
   # If you get locked out of nexus, restart nexus with LDAP_ENABLED=false.
-  sed -i "/[a-zA-Z]*Xml*[a-zA-Z]/d"  ${NEXUS_HOME}/conf/security-configuration.xml
+  #   - To allow user role mapping need to allow xml authorization
+  sed -i "/XmlAuthenticatingRealm/d"  ${NEXUS_HOME}/conf/security-configuration.xml
   
   # Define the correct LDAP user and group mapping configurations
   LDAP_TYPE=${LDAP_TYPE:-openldap}
@@ -145,7 +146,7 @@ EOM
 
 else
     # Delete LDAP realm
-    sed -i "/[a-zA-Z]*Ldap*[a-zA-Z]/d" ${NEXUS_HOME}/conf/security-configuration.xml
+    sed -i "/LdapAuthenticatingRealm/d" ${NEXUS_HOME}/conf/security-configuration.xml
 fi
  
 # chown the nexus home directory
