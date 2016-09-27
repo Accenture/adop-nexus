@@ -20,6 +20,11 @@ if [ -e "${NEXUS_HOME}/nexus.lock" ]
        echo "$(date) Application was not shutdown cleanly, deleting lock file."
        rm -rf ${NEXUS_HOME}/nexus.lock
 fi
+
+if [ -n "${USER_AGENT}" ]
+       then
+       echo "nexus.browserdetector.excludedUserAgents=${USER_AGENT}" >> /opt/sonatype/nexus/conf/nexus.properties
+fi
  
 if [ -n "${NEXUS_BASE_URL}" ]
        then
@@ -70,7 +75,8 @@ insert_role () {
 if [ "${LDAP_ENABLED}" = true ]
   then
  
-  if [ ${NEXUS_CREATE_CUSTOM_ROLES} = true ]; then
+  if [[ ${NEXUS_CREATE_CUSTOM_ROLES} == true ]];
+    then
     echo "$(date) - Creating custom roles and mappings..."
     [[ -n "${NEXUS_CUSTOM_ADMIN_ROLE}" ]] && insert_role ${NEXUS_CUSTOM_ADMIN_ROLE} admin
     [[ -n "${NEXUS_CUSTOM_DEPLOY_ROLE}" ]] && insert_role ${NEXUS_CUSTOM_DEPLOY_ROLE} deployment
