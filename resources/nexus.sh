@@ -13,6 +13,13 @@ mkdir -p ${NEXUS_HOME}conf
 cp -R /resources/conf/managed/* ${NEXUS_HOME}conf
 cp -R -n /resources/conf/unmanaged/* ${NEXUS_HOME}conf
 
+# Copy in custom logback configuration which prints application and access logs to stdout if environment variable is set to true
+cp /resources/conf/logback/logback.properties ${NEXUS_HOME}conf
+if [[ ${DEBUG_LOGGING} == true ]]
+  then
+  cp /resources/conf/logback/logback-nexus.xml ${NEXUS_HOME}conf
+  cp /resources/conf/logback/logback-access.xml /opt/sonatype/nexus/conf/
+fi
 
 # Delete lock file if instance was not shutdown cleanly.
 if [ -e "${NEXUS_HOME}/nexus.lock" ] 

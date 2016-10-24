@@ -1,6 +1,6 @@
 #Supported tags and respective Dockerfile links
 
-- [`0.1.0`, `0.1.0` (*0.1.0/Dockerfile*)](https://github.com/Accenture/adop-nexus/blob/master/Dockerfile.md)
+- [`0.1.3`, `0.1.3` (*0.1.0/Dockerfile*)](https://github.com/Accenture/adop-nexus/blob/master/Dockerfile.md)
 
 # What is adop-nexus?
 adop-nexus is a wrapper for the sonatype/nexus image. It has primarily been built to perform extended configuration. Nexus® is an artifact repository manager.
@@ -15,14 +15,14 @@ To start the server, where version is the release version of the Docker containe
     
       $ docker run -d --name nexus -p 8081:8081 -e LDAP_ENABLED=false accenture/adop-nexus:VERSION
 
-If LDAP authentication is disabled the default user/password is:
+If LDAP authentication is disabled, the default user/password is:
   
   * username: `admin`
   * password: `admin123`
 
 ## Persisting data
 
-To persis data mount out the /sonatype-work directory.
+To persist data mount out the /sonatype-work directory.
 
 e.g. $ docker run -d --name nexus -v $(pwd)/data:/sonatype-work -p 8081:8081 -e LDAP_ENABLED=false accenture/adop-nexus:VERSION
 
@@ -84,6 +84,7 @@ Additionally, the image reads the following LDAP environment variables if you wa
 ## Other configuration variables
 
  * `CONTEXT_PATH`, passed as -Dnexus-webapp-context-path. This is used to define the URL which Nexus is accessed.
+ * `DEBUG_LOGGING`, defaults to false. If this is set to true, additional debug/access logs are enabled and sent to stdout/specified logging driver.
  * `MAX_HEAP`, passed as -Xmx. Defaults to 1g.
  * `MIN_HEAP`, passed as -Xms. Defaults to 256m.
  * `JAVA_OPTS`. Additional options can be passed to the JVM via this variable. Default: -server -XX:MaxPermSize=192m -Djava.net.preferIPv4Stack=true.
