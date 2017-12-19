@@ -166,7 +166,7 @@ fi
 chown -R nexus:nexus ${NEXUS_HOME}
  
 # start nexus as the nexus user
-su -c "java \
+su -c "${JAVA_HOME}/bin/java \
 -Dnexus-work=${SONATYPE_WORK} -Dnexus-webapp-context-path=${CONTEXT_PATH} \
 -Xms${MIN_HEAP} -Xmx${MAX_HEAP} \
 -cp 'conf/:lib/*' \
