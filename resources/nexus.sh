@@ -7,19 +7,20 @@ echo "$(date) - LDAP Enabled: ${LDAP_ENABLED}"
 # Copy config files.
 mkdir -p ${NEXUS_HOME}/etc/logback
 
+# Copy in custom logback configuration which prints application and access logs to stdout if environment variable is set to true
+cp /resources/conf/logback/logback.xml ${NEXUS_HOME}/etc/logback/
+if [[ ${DEBUG_LOGGING} == true ]]
+  then
+  cp /resources/conf/logback/logback-access.xml ${NEXUS_HOME}/etc/logback/
+fi
+
 # chown the nexus home directory
 chown -R nexus:nexus ${NEXUS_HOME}
+
+echo "Executing provision.sh"
+nohup /usr/local/bin/provision.sh &
+echo "$(date) - Base URL: ${NEXUS_BASE_URL}"
 
 # start nexus as the nexus user
 sh -c ${SONATYPE_DIR}/start-nexus-repository-manager.sh
 
-# Define the correct LDAP user and group mapping configurations
-if [ -n "${NEXUS_BASE_URL}" ]
-       then
-       until $(curl --output /dev/null --silent --head --fail http://localhost:8081/${NEXUS_CONTEXT}); do
-         sleep 10
-       done
-       # Add base url - requests timeout if incorrect
-       nohup /usr/local/bin/provision.sh
-       echo "$(date) - Base URL: ${NEXUS_BASE_URL}"
-fi

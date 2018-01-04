@@ -18,6 +18,9 @@ privileges = (parsed_args.privileges == null ? new HashSet() : parsed_args.privi
 roles = (parsed_args.roles == null ? new HashSet() : parsed_args.roles.toSet())
 
 if (existingRole != null) {
+    existingRole.setName(parsed_args.name)
+    existingRole.setDescription(parsed_args.description)
+    existingRole.setPrivileges(privileges)
     existingRole.setRoles(roles)
     authManager.updateRole(existingRole)
 } else {
