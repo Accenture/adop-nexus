@@ -59,12 +59,18 @@ if [[ -n "${NEXUS_PROXY_HOST}" ]] && [[ -n "${NEXUS_PROXY_PORT}" ]]
 fi
 
 
-#Trigger when LDAP is enabled 
+#LDAP parameters when LDAP is enabled 
 LDAP_USER_GROUP_CONFIG="{\"name\":\"$LDAP_NAME\",\"map_groups_as_roles\":\"$LDAP_MAP_GROUP_AS_ROLES\",\"host\":\"$LDAP_URL\",\"port\":\"$LDAP_PORT\",\"searchBase\":\"$LDAP_SEARCH_BASE\",\"auth\":\"$LDAP_AUTH\",\"systemPassword\":\"$LDAP_AUTH_PASSWORD\",\"systemUsername\":\"$LDAP_AUTH_USERNAME\",\"emailAddressAttribute\":\"$LDAP_USER_EMAIL_ATTRIBUTE\",\"ldapGroupsAsRoles\":\"$LDAP_GROUPS_AS_ROLES\",\"groupBaseDn\":\"$LDAP_GROUP_BASE_DN\",\"groupIdAttribute\":\"$LDAP_GROUP_ID_ATTRIBUTE\",\"groupMemberAttribute\":\"$LDAP_GROUP_MEMBER_ATTRIBUTE\",\"groupMemberFormat\":\"$LDAP_GROUP_MEMBER_FORMAT\",\"groupObjectClass\":\"$LDAP_GROUP_OBJECT_CLASS\",\"userIdAttribute\":\"$LDAP_USER_ID_ATTRIBUTE\",\"userPasswordAttribute\":\"$LDAP_USER_PASSWORD_ATTRIBUTE\",\"userObjectClass\":\"$LDAP_USER_OBJECT_CLASS\",\"userBaseDn\":\"$LDAP_USER_BASE_DN\",\"userRealNameAttribute\":\"$LDAP_USER_REAL_NAME_ATTRIBUTE\"}"
-NEXUS_DEVELOP_ROLE_CONFIG="{\"id\":\"$NEXUS_CUSTOM_DEV_ROLE\",\"name\":\"Developer\",\"description\":\"Developer_Role\",\"privileges\":"[\"nx-roles-update\",\"nx-ldap-update\"]",\"role\":"[]"}"
+
+#Parameters to Insert Develop Role 
+NEXUS_DEVELOP_ROLE_CONFIG="{\"id\":\"$NEXUS_CUSTOM_DEV_ROLE\",\"name\":\"Developer\",\"description\":\"Developer_Role\",\"privileges\":"[\"nx-roles-update\",\"nx-ldap-update\"]",\"role\":"[\"nx-admin\",\"nx-anonymous\"]"}"
+
+#Parameters to Insert Deploy Role
 NEXUS_DEPLOY_ROLE_CONFIG="{\"id\":\"$NEXUS_CUSTOM_DEPLOY_ROLE\",\"name\":\"Deployment\",\"description\":\"Deployment_Role\",\"privileges\":"[\"nx-ldap-all\",\"nx-roles-all\"]",\"role\":"[]"}"
-#NEXUS_ADMIN_ROLE_CONFIG="{\"id\":\"$NEXUS_CUSTOM_ADMIN_ROLE\",\"name\":\"Admin\",\"description\":\"Adminstration_Role\",\"privileges\":"[\"nx-admin\"]",\"role\":"[\"nx-admin\"]"}"
-NEXUS_ADMIN_ROLE_CONFIG"{\"id\":\"dev\",\"name\":\"test\",\"description\":\"test\",\"privileges\":"[\"nx-ldap-update\",\"all-repos-read\"]",\"role\":"[\"nx-admin\"]"}"
+
+#Parameters to Insert Admin Role
+NEXUS_ADMIN_ROLE_CONFIG="{\"id\":\"$NEXUS_CUSTOM_ADMIN_ROLE\",\"name\":\"Admin\",\"description\":\"Adminstration_Role\",\"privileges\":"[\"nx-admin\"]",\"role\":"[\"nx-admin\"]"}"
+#NEXUS_ADMIN_ROLE_CONFIG"{\"id\":\"dev\",\"name\":\"test\",\"description\":\"test\",\"privileges\":"[\"nx-ldap-update\",\"all-repos-read\"]",\"role\":"[\"nx-admin\"]"}"
 
 
 if [ "${LDAP_ENABLED}" = "true" ]

@@ -3,11 +3,12 @@
 - [`0.1.3`, `0.1.3` (*0.1.0/Dockerfile*)](https://github.com/Accenture/adop-nexus/blob/master/Dockerfile.md)
 
 # What is adop-nexus?
-adop-nexus is a wrapper for the sonatype/nexus image. It has primarily been built to perform extended configuration. Nexus® is an artifact repository manager.
+We have upgarded the nexus version to 3.7.1 and hence this image will enable the features of the latest version. To read more please cclick on the link -> https://books.sonatype.com/nexus-book/3.0/reference/ 
 
 ![logo](http://blog.sonatype.com/wp-content/uploads/2010/01/nexus-small.png)
 
 # How to use this image?
+We would recommend to make changes to the provision.sh script in order to add/delete anything as the docker restart would re-set everything as it is according to provision.sh
 
 ## Run Nexus
 
@@ -19,7 +20,8 @@ If LDAP authentication is disabled, the default user/password is:
   
   * username: `admin`
   * password: `admin123`
-
+ 
+We should reset the default passowrd by setting new password value in Dockerfile for NEXUS_ADMIN_PASSWORD=<New_Password>
 ## Persisting data
 
 To persist data mount out the /sonatype-work directory.
