@@ -85,6 +85,13 @@ if [ "${LDAP_ENABLED}" = "true" ]
   fi
  fi
 
+#Include Legacy URL 
+File="${NEXUS_SONATYPE}/etc/nexus-default.properties"
+Property="org.sonatype.nexus.repository.httpbridge.internal.HttpBridgeModule.legacy=true"
+cp ${NEXUS_SONATYPE}/etc/nexus-default.properties ${NEXUS_SONATYPE}/etc/nexus-default.properties_Backup
+grep -qF "$Property" "$File" || echo "$Property" | tee --append "$File"
+
+
 #update the admin password
 NEXUS_PASSWORD="{\"new_password\":\"$NEXUS_ADMIN_PASSWORD\"}"
 addAndRunScript updatePassword resources/conf/update_admin_password.groovy $NEXUS_PASSWORD

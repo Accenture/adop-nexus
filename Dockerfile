@@ -4,6 +4,7 @@ FROM sonatype/nexus3:3.7.1
 ENV LDAP_ENABLED=true \
     CONTEXT_PATH=/nexus \
     NEXUS_HOME=/sonatype-work/ \
+    NEXUS_SONATYPE=/opt/sonatype/nexus \
     DEBUG_LOGGING=false \
     LDAP_MAP_GROUP_AS_ROLES=true
     LDAP_URL="" \
