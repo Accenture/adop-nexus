@@ -163,10 +163,11 @@ else
 fi
  
 # chown the nexus home directory
-chown -R nexus:nexus ${NEXUS_HOME}
+chown nexus:nexus "${NEXUS_HOME}"
+chown -R nexus:nexus $(ls ${NEXUS_HOME} | awk -v NEXUS_HOME="${NEXUS_HOME}/" '{if($1 != "storage"){ print NEXUS_HOME$1 }}')
  
 # start nexus as the nexus user
-su -c "java \
+su -c "${JAVA_HOME}/bin/java \
 -Dnexus-work=${SONATYPE_WORK} -Dnexus-webapp-context-path=${CONTEXT_PATH} \
 -Xms${MIN_HEAP} -Xmx${MAX_HEAP} \
 -cp 'conf/:lib/*' \
