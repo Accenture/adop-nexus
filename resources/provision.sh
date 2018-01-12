@@ -10,7 +10,7 @@ set -u
 
 username=admin
 password=admin123
-nexus_host=http://localhost:8081/${NEXUS_CONTEXT}
+nexus_host=http://localhost:8081/$NEXUS_CONTEXT
 pretty_sleep() {
     secs=${1:-60}
     tool=${2:-service}
@@ -30,7 +30,6 @@ function addAndRunScript {
   name=$1
   file=$2
   args=${3:-false}
-  echo $args
   groovy -Dgroovy.grape.report.downloads=true resources/conf/addUpdatescript.groovy -u "$username" -p "$password" -n "$name" -f "$file" -h "$nexus_host"
   printf "\nPublished $file as $name\n\n"
   curl -v -X POST -u $username:$password --header "Content-Type: text/plain" "$nexus_host/service/siesta/rest/v1/script/$name/run" -d $args
@@ -62,26 +61,21 @@ fi
 #LDAP parameters when LDAP is enabled 
 LDAP_USER_GROUP_CONFIG="{\"name\":\"$LDAP_NAME\",\"map_groups_as_roles\":\"$LDAP_MAP_GROUP_AS_ROLES\",\"host\":\"$LDAP_URL\",\"port\":\"$LDAP_PORT\",\"searchBase\":\"$LDAP_SEARCH_BASE\",\"auth\":\"$LDAP_AUTH\",\"systemPassword\":\"$LDAP_BIND_PASSWORD\",\"systemUsername\":\"$LDAP_BIND_DN\",\"emailAddressAttribute\":\"$LDAP_USER_EMAIL_ATTRIBUTE\",\"ldapGroupsAsRoles\":\"$LDAP_GROUPS_AS_ROLES\",\"groupBaseDn\":\"$LDAP_GROUP_BASE_DN\",\"groupIdAttribute\":\"$LDAP_GROUP_ID_ATTRIBUTE\",\"groupMemberAttribute\":\"$LDAP_GROUP_MEMBER_ATTRIBUTE\",\"groupMemberFormat\":\"$LDAP_GROUP_MEMBER_FORMAT\",\"groupObjectClass\":\"$LDAP_GROUP_OBJECT_CLASS\",\"userIdAttribute\":\"$LDAP_USER_ID_ATTRIBUTE\",\"userPasswordAttribute\":\"$LDAP_USER_PASSWORD_ATTRIBUTE\",\"userObjectClass\":\"$LDAP_USER_OBJECT_CLASS\",\"userBaseDn\":\"$LDAP_USER_BASE_DN\",\"userRealNameAttribute\":\"$LDAP_USER_REAL_NAME_ATTRIBUTE\"}"
 
-#Parameters to Insert Develop Role 
-NEXUS_DEVELOP_ROLE_CONFIG="{\"id\":\"$NEXUS_CUSTOM_DEV_ROLE\",\"name\":\"Developer\",\"description\":\"Developer_Role\",\"privileges\":"[\"nx-roles-update\",\"nx-ldap-update\"]",\"role\":"[\"nx-admin\",\"nx-anonymous\"]"}"
-
-#Parameters to Insert Deploy Role
-NEXUS_DEPLOY_ROLE_CONFIG="{\"id\":\"$NEXUS_CUSTOM_DEPLOY_ROLE\",\"name\":\"Deployment\",\"description\":\"Deployment_Role\",\"privileges\":"[\"nx-ldap-all\",\"nx-roles-all\"]",\"role\":"[]"}"
-
-#Parameters to Insert Admin Role
-NEXUS_ADMIN_ROLE_CONFIG="{\"id\":\"$NEXUS_CUSTOM_ADMIN_ROLE\",\"name\":\"Admin\",\"description\":\"Adminstration_Role\",\"privileges\":"[\"nx-admin\"]",\"role\":"[\"nx-admin\"]"}"
-#NEXUS_ADMIN_ROLE_CONFIG"{\"id\":\"dev\",\"name\":\"test\",\"description\":\"test\",\"privileges\":"[\"nx-ldap-update\",\"all-repos-read\"]",\"role\":"[\"nx-admin\"]"}"
-
-
 if [ "${LDAP_ENABLED}" = "true" ]
   then 
     addAndRunScript ldapConfig resources/conf/ldapconfig.groovy $LDAP_USER_GROUP_CONFIG  
-  if [[ "${NEXUS_CREATE_CUSTOM_ROLES}" = "true" ]];
+  if [[ "${NEXUS_CREATE_CUSTOM_ROLES}" == "true" ]];
    then
     echo "$(date) - Creating custom roles and mappings..."
-    [[ -n "${NEXUS_CUSTOM_ADMIN_ROLE}" ]] && addAndRunScript insertRole resources/conf/insertrole.groovy $NEXUS_ADMIN_ROLE_CONFIG
-    [[ -n "${NEXUS_CUSTOM_DEPLOY_ROLE}" ]] && addAndRunScript insertRole resources/conf/insertrole.groovy $NEXUS_DEPLOY_ROLE_CONFIG
-    [[ -n "${NEXUS_CUSTOM_DEV_ROLE}" ]] && addAndRunScript insertRole resources/conf/insertrole.groovy $NEXUS_DEVELOP_ROLE_CONFIG
+    [[ -n "${NEXUS_CUSTOM_ADMIN_ROLE}" ]] 
+    NEXUS_ADMIN_ROLE_CONFIG="{\"id\":\"$NEXUS_CUSTOM_ADMIN_ROLE\",\"name\":\"Admin\",\"description\":\"Adminstration_Role\",\"privileges\":"[\"nx-admin\"]",\"role\":"[\"nx-admin\"]"}"
+    addAndRunScript insertRole resources/conf/insertrole.groovy $NEXUS_ADMIN_ROLE_CONFIG
+    [[ -n "${NEXUS_CUSTOM_DEPLOY_ROLE}" ]]
+    NEXUS_DEPLOY_ROLE_CONFIG="{\"id\":\"$NEXUS_CUSTOM_DEPLOY_ROLE\",\"name\":\"Deployment\",\"description\":\"Deployment_Role\",\"privileges\":"[\"nx-ldap-all\",\"nx-roles-all\"]",\"role\":"[]"}"
+    addAndRunScript insertRole resources/conf/insertrole.groovy $NEXUS_DEPLOY_ROLE_CONFIG
+    [[ -n "${NEXUS_CUSTOM_DEV_ROLE}" ]]
+    NEXUS_DEVELOP_ROLE_CONFIG="{\"id\":\"$NEXUS_CUSTOM_DEV_ROLE\",\"name\":\"Developer\",\"description\":\"Developer_Role\",\"privileges\":"[\"nx-roles-update\",\"nx-ldap-update\"]",\"role\":"[\"nx-admin\",\"nx-anonymous\"]"}"
+    addAndRunScript insertRole resources/conf/insertrole.groovy $NEXUS_DEVELOP_ROLE_CONFIG
   fi
  fi
 
