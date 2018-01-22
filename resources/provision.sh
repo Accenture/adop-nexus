@@ -6,7 +6,7 @@
 # fail if anything errors
 set -e
 # fail if a function call is missing an argument
-set -u
+#set -u
 
 username=admin
 password=admin123
@@ -68,10 +68,10 @@ if [ "${LDAP_ENABLED}" = "true" ]
    then
     echo "$(date) - Creating custom roles and mappings..."
     [[ -n "${NEXUS_CUSTOM_ADMIN_ROLE}" ]] 
-    NEXUS_ADMIN_ROLE_CONFIG="{\"id\":\"$NEXUS_CUSTOM_ADMIN_ROLE\",\"name\":\"Admin\",\"description\":\"Adminstration_Role\",\"privileges\":"[\"nx-admin\"]",\"role\":"[\"nx-admin\"]"}"
+    NEXUS_ADMIN_ROLE_CONFIG="{\"id\":\"$NEXUS_CUSTOM_ADMIN_ROLE\",\"name\":\"Admin\",\"description\":\"Adminstration_Role\",\"privileges\":\"nx-all\",\"role\":\"nx-admin\"}"
     addAndRunScript insertRole resources/conf/insertrole.groovy $NEXUS_ADMIN_ROLE_CONFIG
     [[ -n "${NEXUS_CUSTOM_DEPLOY_ROLE}" ]]
-    NEXUS_DEPLOY_ROLE_CONFIG="{\"id\":\"$NEXUS_CUSTOM_DEPLOY_ROLE\",\"name\":\"Deployment\",\"description\":\"Deployment_Role\",\"privileges\":"[\"nx-ldap-all\",\"nx-roles-all\"]",\"role\":"[]"}"
+    NEXUS_DEPLOY_ROLE_CONFIG="{\"id\":\"$NEXUS_CUSTOM_DEPLOY_ROLE\",\"name\":\"Deployment\",\"description\":\"Deployment_Role\",\"privileges\":"[\"nx-ldap-all\",\"nx-roles-all\"]",\"role\":\"nx-admin\"}"
     addAndRunScript insertRole resources/conf/insertrole.groovy $NEXUS_DEPLOY_ROLE_CONFIG
     [[ -n "${NEXUS_CUSTOM_DEV_ROLE}" ]]
     NEXUS_DEVELOP_ROLE_CONFIG="{\"id\":\"$NEXUS_CUSTOM_DEV_ROLE\",\"name\":\"Developer\",\"description\":\"Developer_Role\",\"privileges\":"[\"nx-roles-update\",\"nx-ldap-update\"]",\"role\":"[\"nx-admin\",\"nx-anonymous\"]"}"
