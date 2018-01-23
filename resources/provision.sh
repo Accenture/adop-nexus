@@ -80,9 +80,9 @@ if [ "${LDAP_ENABLED}" = "true" ]
  fi
 
 #Include Legacy URL 
-File="${NEXUS_SONATYPE}/etc/nexus-default.properties"
+File="${NEXUS_HOME}/etc/nexus-default.properties"
 Property="org.sonatype.nexus.repository.httpbridge.internal.HttpBridgeModule.legacy=true"
-cp ${NEXUS_SONATYPE}/etc/nexus-default.properties ${NEXUS_SONATYPE}/etc/nexus-default.properties_Backup
+cp ${NEXUS_HOME}/etc/nexus-default.properties ${NEXUS_HOME}/etc/nexus-default.properties_Backup
 grep -qF "$Property" "$File" || echo "$Property" | tee --append "$File"
 
 
