@@ -2,6 +2,7 @@ FROM sonatype/nexus3:3.7.1
 
 
 ENV LDAP_ENABLED=true \
+    NEXUS_CONTEXT=nexus \
     DEBUG_LOGGING=false \
     LDAP_SEARCH_BASE="" \
     LDAP_URL="" \
@@ -20,7 +21,7 @@ ENV LDAP_ENABLED=true \
     LDAP_USER_OBJECT_CLASS=inetOrgPerson \
     LDAP_USER_BASE_DN=ou-people \
     LDAP_USER_REAL_NAME_ATTRIBUTE=cn \
-    LDAP_GROUP_MEMBER_FORMAT=dn \
+    LDAP_GROUP_MEMBER_FORMAT='${dn}' \
     NEXUS_CREATE_CUSTOM_ROLES=false
 
 USER root

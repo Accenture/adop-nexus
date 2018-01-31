@@ -24,7 +24,7 @@ ldapConfig.setName(parsed_args.name)
 
 // Connection
 connection = new Connection()
-connection.setHost(new Connection.Host(Connection.Protocol.valueOf("ldaps"), parsed_args.host, Integer.valueOf(parsed_args.port)))
+connection.setHost(new Connection.Host(Connection.Protocol.valueOf(parsed_args.protocol), parsed_args.host, Integer.valueOf(parsed_args.port)))
 if (parsed_args.auth == "simple") {
     connection.setAuthScheme("simple")
     connection.setSystemUsername(parsed_args.systemUsername)
