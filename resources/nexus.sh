@@ -15,7 +15,8 @@ if [[ ${DEBUG_LOGGING} == true ]]
 fi
 
 # Chown the nexus data directory
-chown -R nexus:nexus "${NEXUS_DATA}"
+chown nexus:nexus "${NEXUS_DATA}"
+chown -R nexus:nexus $(ls ${NEXUS_DATA} | awk -v NEXUS_DATA="${NEXUS_DATA}/" '{if($1 != "blobs"){ print NEXUS_DATA$1 }}')
 
 echo "Executing provision.sh"
 nohup /usr/local/bin/provision.sh &
