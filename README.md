@@ -1,6 +1,6 @@
 #Supported tags and respective Dockerfile links
 
-- [`0.1.3`, `0.1.3` (*0.1.0/Dockerfile*)](https://github.com/Accenture/adop-nexus/blob/master/Dockerfile.md)
+- [`0.2.0` (*0.2.0/Dockerfile*)](https://github.com/Accenture/adop-nexus/blob/master/Dockerfile.md)
 
 # What is adop-nexus?
 We have upgarded the nexus version to 3.7.1 and hence this image will enable the features of the latest version. To read more please cclick on the link -> https://books.sonatype.com/nexus-book/3.0/reference/ 
@@ -21,12 +21,12 @@ If LDAP authentication is disabled, the default user/password is:
   * username: `admin`
   * password: `admin123`
  
-We should reset the default passowrd by setting new password value in Dockerfile for NEXUS_ADMIN_PASSWORD=<New_Password>
+We should reset the default passowrd by setting new password value with the configuration varible: `NEXUS_ADMIN_PASSWORD`=<New_Password>
 ## Persisting data
 
-To persist data mount out the /sonatype-work directory.
+To persist data mount out the /nexus-data directory.
 
-e.g. $ docker run -d --name nexus -v $(pwd)/data:/sonatype-work -p 8081:8081 -e LDAP_ENABLED=false accenture/adop-nexus:VERSION
+e.g. $ docker run -d --name nexus -v $(pwd)/data:/nexus-data -p 8081:8081 -e LDAP_ENABLED=false accenture/adop-nexus:VERSION
 
 ## LDAP Authentication
 
@@ -48,6 +48,8 @@ Example run command:
          -e LDAP_USER_BASE_DN=ou=people \ 
          -e LDAP_GROUP_BASE_DN=ou=groups \ 
          -e LDAP_BIND_PASSWORD=password \ 
+         -e LDAP_NAME=nexusldap \
+         -e LDAP_AUTH=simple \
          accenture/adop-nexus:VERSION
 
 The image reads the following LDAP environment variables for ADOP OpenLDAP or LDAP_TYPE is 'openldap':
@@ -85,7 +87,7 @@ Additionally, the image reads the following LDAP environment variables if you wa
 
 ## Other configuration variables
 
- * `CONTEXT_PATH`, passed as -Dnexus-webapp-context-path. This is used to define the URL which Nexus is accessed.
+ * `NEXUS_CONTEXT`, passed as -Dnexus-webapp-context-path. This is used to define the URL which Nexus is accessed.
  * `DEBUG_LOGGING`, defaults to false. If this is set to true, additional debug/access logs are enabled and sent to stdout/specified logging driver.
  * `MAX_HEAP`, passed as -Xmx. Defaults to 1g.
  * `MIN_HEAP`, passed as -Xms. Defaults to 256m.
