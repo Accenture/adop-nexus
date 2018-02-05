@@ -56,8 +56,6 @@ if (parsed_args.map_groups_as_roles) {
     mapping.setGroupMemberFormat(parsed_args.groupMemberFormat)
 }
 
-//mapping.setUserSubtree(parsed_args.user_subtree)
-//mapping.setGroupSubtree(parsed_args.group_subtree)
 
 ldapConfig.setMapping(mapping)
 

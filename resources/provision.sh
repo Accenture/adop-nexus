@@ -5,8 +5,6 @@
 
 # fail if anything errors
 set -e
-# fail if a function call is missing an argument
-#set -u
 
 username=admin
 password=admin123
@@ -107,7 +105,3 @@ fi
 
 
 printf "\nProvisioning Scripts Completed\n\n"
-
-
-
-
