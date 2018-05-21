@@ -5,9 +5,11 @@ ENV LDAP_ENABLED=true \
     NEXUS_CONTEXT=nexus \
     DEBUG_LOGGING=false \
     LDAP_SEARCH_BASE="" \
+    LDAP_NAME=nexusldap \
     LDAP_URL="" \
     LDAP_PORT=389 \
     LDAP_AUTH_PROTOCOL=ldap \
+    LDAP_AUTH_SCHEME=simple \
     LDAP_USER_EMAIL_ATTRIBUTE=mail \
     LDAP_GROUPS_AS_ROLES=true \
     LDAP_GROUP_BASE_DN=ou=groups \
@@ -19,7 +21,7 @@ ENV LDAP_ENABLED=true \
     LDAP_USER_ID_ATTRIBUTE=uid \
     LDAP_USER_PASSWORD_ATTRIBUTE=userPassword \
     LDAP_USER_OBJECT_CLASS=inetOrgPerson \
-    LDAP_USER_BASE_DN=ou-people \
+    LDAP_USER_BASE_DN=ou=people \
     LDAP_USER_REAL_NAME_ATTRIBUTE=cn \
     LDAP_GROUP_MEMBER_FORMAT='${dn}' \
     NEXUS_CREATE_CUSTOM_ROLES=false
@@ -31,9 +33,9 @@ RUN yum install -y zip unzip
 RUN yum install -y which
 RUN curl -s get.sdkman.io | bash
 RUN source "$HOME/.sdkman/bin/sdkman-init.sh"
-RUN yes | /bin/bash -l -c "sdk install groovy"
+RUN yes | /bin/bash -l -c "sdk install groovy 2.4.15"
 
-ENV PATH="/root/.sdkman/candidates/groovy/2.4.13/bin:${PATH}"
+ENV PATH="/root/.sdkman/candidates/groovy/2.4.15/bin:${PATH}"
 RUN export PATH
 
 COPY resources/nexus.sh /usr/local/bin/
