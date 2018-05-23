@@ -18,6 +18,10 @@ fi
 chown nexus:nexus "${NEXUS_DATA}"
 chown -R nexus:nexus $(ls ${NEXUS_DATA} | awk -v NEXUS_DATA="${NEXUS_DATA}/" '{if($1 != "blobs"){ print NEXUS_DATA$1 }}')
 
+if [ ! -f ${NEXUS_DATA}/current_local_password ]; then
+  echo admin123 > ${NEXUS_DATA}/current_local_password
+fi
+
 echo "Executing provision.sh"
 nohup /usr/local/bin/provision.sh &
 

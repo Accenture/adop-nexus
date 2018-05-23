@@ -21,7 +21,7 @@ If LDAP authentication is disabled, the default user/password is:
   * username: `admin`
   * password: `admin123`
  
-We should reset the default passowrd by setting new password value with the configuration varible: `NEXUS_ADMIN_PASSWORD`=<New_Password>
+We should reset the default password by setting new password value with the configuration variable: `NEXUS_ADMIN_PASSWORD`=<New_Password>
 ## Persisting data
 
 To persist data mount out the /nexus-data directory.
@@ -30,7 +30,7 @@ e.g. $ docker run -d --name nexus -v $(pwd)/data:/nexus-data -p 8081:8081 -e LDA
 
 ## LDAP Authentication
 
-By default, the image will enable LDAP authentication, setting the `LDAP_ENABLED` environment variable to false will disable LDAP authentication. The variables write Nexus ldap.xml configuration file. 
+By default, the image will enable LDAP authentication, setting the `LDAP_ENABLED` environment variable to false will disable LDAP authentication. The variables write Nexus through API.
 
 The default nexus configuration depends on the following LDAP groups
   * nx-admin - administrators
@@ -49,10 +49,10 @@ Example run command:
          -e LDAP_GROUP_BASE_DN=ou=groups \ 
          -e LDAP_BIND_PASSWORD=password \ 
          -e LDAP_NAME=nexusldap \
-         -e LDAP_AUTH=simple \
+         -e LDAP_AUTH_SCHEME=simple \
          accenture/adop-nexus:VERSION
 
-The image reads the following LDAP environment variables for ADOP OpenLDAP or LDAP_TYPE is 'openldap':
+The image reads the following LDAP environment variables for ADOP OpenLDAP:
 
   * searchBase - `${LDAP_SEARCH_BASE}`
   * systemUsername - `${LDAP_BIND_DN}`
@@ -73,7 +73,7 @@ The image reads the following LDAP environment variables for ADOP OpenLDAP or LD
   * userBaseDn - `${LDAP_USER_BASE_DN}`
   * userRealNameAttribute - `${LDAP_USER_REAL_NAME_ATTRIBUTE:-cn}`
 
-Additionally, the image reads the following LDAP environment variables if you want to use a Windows Active Directory or LDAP_TYPE is 'active_directory':
+Additionally, the image reads the following LDAP environment variables if you want to use a Windows Active Directory:
 
   * groupIdAttribute - `${LDAP_GROUP_ID_ATTRIBUTE:-cn}`
   * groupMemberAttribute - `${LDAP_GROUP_MEMBER_ATTRIBUTE-uniqueMember}`
@@ -100,7 +100,8 @@ Additionally, the image reads the following LDAP environment variables if you wa
  * `NEXUS_CUSTOM_ADMIN_ROLE` , if set, create a custom group name with nx-admin role.
  * `NEXUS_CUSTOM_DEV_ROLE` , if set, create a custom group name with nx-developer role.
  * `NEXUS_CUSTOM_DEPLOY_ROLE`, if set, create a custom group name with nx-deployment role.
- * `USER_AGENT`, if set, you can enable Basic Authentication. [How do I enable WWW-Authenticate headers for content 401 responses](https://support.sonatype.com/hc/en-us/articles/213465078-How-do-I-enable-WWW-Authenticate-headers-for-content-401-responses)
+ * `USER_AGENT`, if set, you can enable Basic Authentication. [How do I enable WWW-Authenticate headers for content 401 responses]
+ (https://support.sonatype.com/hc/en-us/articles/213465078-How-do-I-enable-WWW-Authenticate-headers-for-content-401-responses)
  
  
 # License
