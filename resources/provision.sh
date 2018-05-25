@@ -36,7 +36,8 @@ function addAndRunScript() {
   name=$1
   file=$2
   eval args="${3:-false}"
-  groovy -Dgroovy.grape.report.downloads=true resources/conf/addUpdatescript.groovy -u "$username" -p "$password" -n "$name" -f "$file" -h "$nexus_host"
+  classPath=$(find /root/.groovy/grapes -name *.jar)
+  groovy -cp $(echo $classPath | sed 's/ /:/g') -Dgroovy.grape.report.downloads=true resources/conf/addUpdatescript.groovy -u "$username" -p "$password" -n "$name" -f "$file" -h "$nexus_host"
   printf "\nPublished $file as $name\n\n"
   curl -v -X POST -u $username:$password --header "Content-Type: text/plain" "$nexus_host/service/siesta/rest/v1/script/$name/run" -d "$args"
   printf "\nSuccessfully executed $name script\n\n\n"
