@@ -41,6 +41,26 @@ RUN export PATH
 COPY resources/nexus.sh /usr/local/bin/
 COPY resources/provision.sh /usr/local/bin/
 COPY resources/ /resources/
+COPY resources/conf/grapeConfig.xml /root/.groovy/
+
+
+RUN grape install org.sonatype.nexus nexus-rest-client 3.6.0-02 \
+    && grape install org.sonatype.nexus nexus-rest-jackson2 3.6.0-02 \
+    && grape install org.sonatype.nexus nexus-script 3.6.0-02 \
+    && grape install org.jboss.spec.javax.servlet jboss-servlet-api_3.1_spec 1.0.0.Final \
+    && grape install com.fasterxml.jackson.core jackson-core 2.8.6 \
+    && grape install com.fasterxml.jackson.core jackson-databind 2.8.6 \
+    && grape install com.fasterxml.jackson.core jackson-annotations 2.8.6 \
+    && grape install com.fasterxml.jackson.jaxrs jackson-jaxrs-json-provider 2.8.6 \
+    && grape install org.jboss.spec.javax.ws.rs jboss-jaxrs-api_2.0_spec 1.0.1.Beta1 \
+    && grape install org.jboss.spec.javax.annotation jboss-annotations-api_1.2_spec 1.0.0.Final \
+    && grape install javax.activation activation 1.1.1 \
+    && grape install net.jcip jcip-annotations 1.0 \
+    && grape install org.jboss.logging jboss-logging-annotations 2.0.1.Final \
+    && grape install org.jboss.logging jboss-logging-processor 2.0.1.Final \
+    && grape install com.sun.xml.bind jaxb-impl 2.2.7 \
+    && grape install com.sun.mail javax.mail 1.5.6 \
+    && grape install org.apache.james apache-mime4j 0.6
 
 RUN chmod u+x /usr/local/bin/nexus.sh && chmod u+x /usr/local/bin/provision.sh
 
