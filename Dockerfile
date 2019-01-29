@@ -43,7 +43,14 @@ COPY resources/provision.sh /usr/local/bin/
 COPY resources/ /resources/
 COPY resources/conf/grapeConfig.xml /root/.groovy/
 
-
+RUN yum update -y yum-plugin-fastestmirror-1.1.31-50.el7 \
+    yum-utils-1.1.31-50.el7 \
+    yum-plugin-ovl-1.1.31-50.el7 \
+    systemd-libs-219-62.el7_6.2 \
+    systemd-219-62.el7_6.2 \
+    gnupg2-2.0.22-5.el7_5 \
+    bind-license-9.9.4-72.el7
+    
 RUN grape install org.sonatype.nexus nexus-rest-client 3.6.0-02 \
     && grape install org.sonatype.nexus nexus-rest-jackson2 3.6.0-02 \
     && grape install org.sonatype.nexus nexus-script 3.6.0-02 \
