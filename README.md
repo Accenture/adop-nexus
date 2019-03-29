@@ -1,4 +1,4 @@
-#Supported tags and respective Dockerfile links
+# Supported tags and respective Dockerfile links
 
 - [`0.2.0` (*0.2.0/Dockerfile*)](https://github.com/Accenture/adop-nexus/blob/master/Dockerfile.md)
 
@@ -107,7 +107,7 @@ Additionally, the image reads the following LDAP environment variables if you wa
 # License
 Please view [licence information](LICENCE.md) for the software contained on this image.
 
-#Supported Docker versions
+# Supported Docker versions
 
 This image is officially supported on Docker version 1.9.1.
 Support for older versions (down to 1.6) is provided on a best-effort basis.
