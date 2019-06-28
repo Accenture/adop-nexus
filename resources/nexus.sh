@@ -18,13 +18,12 @@ fi
 chown nexus:nexus "${NEXUS_DATA}"
 chown -R nexus:nexus $(ls ${NEXUS_DATA} | awk -v NEXUS_DATA="${NEXUS_DATA}/" '{if($1 != "blobs"){ print NEXUS_DATA$1 }}')
 
-if [ ! -f ${NEXUS_DATA}/current_local_password ]; then
-  echo admin123 > ${NEXUS_DATA}/current_local_password
-fi
+# Dockerizing jmxpassword file
+dockerize -template /resources/jmxremote.password.tmpl:/resources/jmxremote.password
+chown -R nexus:nexus /resources && chmod 600 /resources/jmxremote.password
 
 echo "Executing provision.sh"
 nohup /usr/local/bin/provision.sh &
 
 # Start nexus as the nexus user
 su -c "${SONATYPE_DIR}/start-nexus-repository-manager.sh" -s /bin/sh nexus
-

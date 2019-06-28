@@ -1,4 +1,4 @@
-FROM sonatype/nexus3:3.12.1
+FROM sonatype/nexus3:3.17.0
 
 
 ENV LDAP_ENABLED=true \
@@ -24,18 +24,34 @@ ENV LDAP_ENABLED=true \
     LDAP_USER_BASE_DN=ou=people \
     LDAP_USER_REAL_NAME_ATTRIBUTE=cn \
     LDAP_GROUP_MEMBER_FORMAT='${dn}' \
-    NEXUS_CREATE_CUSTOM_ROLES=false
+    NEXUS_CREATE_CUSTOM_ROLES=false \
+    NEXUS_JMX_PASSWORD=adopnexusjmx \
+    DOCKERIZE_VERSION=v0.6.1
 
 USER root
 
-# Install groovy
-RUN yum install -y zip unzip
-RUN yum install -y which
+RUN yum install -y epel-release
+
+RUN yum install -y \
+    yum-plugin-fastestmirror-1.1.31-50.el7 \
+    yum-utils-1.1.31-50.el7 \
+    yum-plugin-ovl-1.1.31-50.el7 \
+    systemd-libs-219-62.el7_6.6 \
+    systemd-219-62.el7_6.6 \
+    gnupg2-2.0.22-5.el7_5 \
+    bind-license-9.9.4-74.el7_6.1Z \
+    zip \
+    unzip \
+    which \
+    jq
+
 RUN curl -s get.sdkman.io | bash
 RUN source "$HOME/.sdkman/bin/sdkman-init.sh"
-RUN yes | /bin/bash -l -c "sdk install groovy 2.4.15"
+RUN yes | /bin/bash -l -c "sdk install groovy 2.4.17"
 
-ENV PATH="/root/.sdkman/candidates/groovy/2.4.15/bin:${PATH}"
+RUN curl -Ls https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar -C /usr/local/bin -xz
+
+ENV PATH="/root/.sdkman/candidates/groovy/2.4.17/bin:${PATH}"
 RUN export PATH
 
 COPY resources/nexus.sh /usr/local/bin/
@@ -43,31 +59,28 @@ COPY resources/provision.sh /usr/local/bin/
 COPY resources/ /resources/
 COPY resources/conf/grapeConfig.xml /root/.groovy/
 
-RUN yum update -y yum-plugin-fastestmirror-1.1.31-50.el7 \
-    yum-utils-1.1.31-50.el7 \
-    yum-plugin-ovl-1.1.31-50.el7 \
-    systemd-libs-219-62.el7_6.2 \
-    systemd-219-62.el7_6.2 \
-    gnupg2-2.0.22-5.el7_5 \
-    bind-license-9.9.4-72.el7
-    
-RUN grape install org.sonatype.nexus nexus-rest-client 3.6.0-02 \
-    && grape install org.sonatype.nexus nexus-rest-jackson2 3.6.0-02 \
-    && grape install org.sonatype.nexus nexus-script 3.6.0-02 \
-    && grape install org.jboss.spec.javax.servlet jboss-servlet-api_3.1_spec 1.0.0.Final \
-    && grape install com.fasterxml.jackson.core jackson-core 2.8.6 \
-    && grape install com.fasterxml.jackson.core jackson-databind 2.8.6 \
-    && grape install com.fasterxml.jackson.core jackson-annotations 2.8.6 \
-    && grape install com.fasterxml.jackson.jaxrs jackson-jaxrs-json-provider 2.8.6 \
-    && grape install org.jboss.spec.javax.ws.rs jboss-jaxrs-api_2.0_spec 1.0.1.Beta1 \
-    && grape install org.jboss.spec.javax.annotation jboss-annotations-api_1.2_spec 1.0.0.Final \
-    && grape install javax.activation activation 1.1.1 \
+RUN grape install org.jboss.spec.javax.ws.rs jboss-jaxrs-api_2.0_spec 1.0.1.Final \
+    && grape install org.jboss.spec.javax.servlet jboss-servlet-api_3.1_spec 1.0.2.Final \
+    && grape install org.jboss.spec.javax.annotation jboss-annotations-api_1.2_spec 1.0.2.Final \
+    && grape install javax.activation activation 1.1 \
     && grape install net.jcip jcip-annotations 1.0 \
-    && grape install org.jboss.logging jboss-logging-annotations 2.0.1.Final \
-    && grape install org.jboss.logging jboss-logging-processor 2.0.1.Final \
-    && grape install com.sun.xml.bind jaxb-impl 2.2.7 \
-    && grape install com.sun.mail javax.mail 1.5.6 \
-    && grape install org.apache.james apache-mime4j 0.6
+    && grape install org.jboss.logging jboss-logging-annotations 2.2.0.Final \
+    && grape install org.jboss.logging jboss-logging-processor 2.2.0.Final \
+    && grape install com.sun.xml.bind jaxb-impl 2.3.2 \
+    && grape install org.apache.james apache-mime4j 0.6.1 \
+    && grape install org.sonatype.nexus nexus-rest-client 3.17.0-01 \
+    && grape install org.sonatype.nexus nexus-rest-jackson2 3.17.0-01 \
+    && grape install org.sonatype.nexus nexus-script 3.17.0-01 \
+    && grape install com.fasterxml.jackson.core jackson-core 2.9.2 \
+    && grape install com.fasterxml.jackson.core jackson-databind 2.9.2 \
+    && grape install com.fasterxml.jackson.core jackson-annotations 2.9.2 \
+    && grape install com.fasterxml.jackson.jaxrs jackson-jaxrs-json-provider 2.9.2 \
+    && grape install javax.activation activation 1.1 \
+    && grape install net.jcip jcip-annotations 1.0 \
+    && grape install org.jboss.logging jboss-logging-annotations 2.2.0.Final \
+    && grape install org.jboss.logging jboss-logging-processor 2.2.0.Final \
+    && grape install com.sun.xml.bind jaxb-impl 2.3.2 \
+    && grape install com.sun.mail javax.mail 1.6.1
 
 RUN chmod u+x /usr/local/bin/nexus.sh && chmod u+x /usr/local/bin/provision.sh
 
