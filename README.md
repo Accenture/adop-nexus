@@ -1,9 +1,9 @@
 #Supported tags and respective Dockerfile links
 
-- [`0.2.0` (*0.2.0/Dockerfile*)](https://github.com/Accenture/adop-nexus/blob/master/Dockerfile.md)
+- [`3.17.0` (*3.17.0/Dockerfile*)](https://github.com/Accenture/adop-nexus/blob/master/Dockerfile)
 
 # What is adop-nexus?
-We have upgarded the nexus version to 3.7.1 and hence this image will enable the features of the latest version. To read more please cclick on the link -> https://books.sonatype.com/nexus-book/3.0/reference/ 
+We have upgraded the nexus3 version to 3.17.0 and hence this image will enable the features of the latest version. To read more please cclick on the link -> https://books.sonatype.com/nexus-book/3.0/reference/ 
 
 ![logo](http://blog.sonatype.com/wp-content/uploads/2010/01/nexus-small.png)
 
@@ -103,14 +103,28 @@ Additionally, the image reads the following LDAP environment variables if you wa
  * `USER_AGENT`, if set, you can enable Basic Authentication. [How do I enable WWW-Authenticate headers for content 401 responses]
  (https://support.sonatype.com/hc/en-us/articles/213465078-How-do-I-enable-WWW-Authenticate-headers-for-content-401-responses)
  
+ # JMX Monitoring
+It is possible to leverage JMX monitoring of Nexus if so desired. This requires launching Nexus with several JVM options
+wrapped into an env variable INSTALL4J_ADD_VM_PARAMS (https://github.com/sonatype/docker-nexus3/blob/master/README.md#notes)
+Basic authentication is supported.
+
+Default password is adopnexusjmx. This can be changed using an environment variable NEXUS_JMX_PASSWORD.
+
+Example launch with JMX with auth enabled:
+
+      $ docker run -d -p 8081:8081 \
+         --name nexus \
+         -e NEXUS_JMX_PASSWORD="topsecret" \
+         -e INSTALL4J_ADD_VM_PARAMS="-Xms1200m -Xmx1200m -XX:MaxDirectMemorySize=2g -Djava.util.prefs.userRoot=${NEXUS_DATA}/javaprefs -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=15666 -Dcom.sun.management.jmxremote.rmi.port=15666 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=true -Dcom.sun.management.jmxremote.password.file=/resources/jmxremote.password -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=localhost" \
+         accenture/adop-nexus
  
 # License
 Please view [licence information](LICENCE.md) for the software contained on this image.
 
 #Supported Docker versions
 
-This image is officially supported on Docker version 1.9.1.
-Support for older versions (down to 1.6) is provided on a best-effort basis.
+This image is officially supported on Docker version 18.09.4.
+Support for older versions (down to 1.9) is provided on a best-effort basis.
 
 # User feedback
 
