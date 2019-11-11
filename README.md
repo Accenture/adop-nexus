@@ -1,4 +1,4 @@
-#Supported tags and respective Dockerfile links
+# Supported tags and respective Dockerfile links
 
 - [`3.17.0` (*3.17.0/Dockerfile*)](https://github.com/Accenture/adop-nexus/blob/master/Dockerfile)
 
@@ -121,7 +121,7 @@ Example launch with JMX with auth enabled:
 # License
 Please view [licence information](LICENCE.md) for the software contained on this image.
 
-#Supported Docker versions
+# Supported Docker versions
 
 This image is officially supported on Docker version 18.09.4.
 Support for older versions (down to 1.9) is provided on a best-effort basis.
